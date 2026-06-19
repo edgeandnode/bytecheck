@@ -1,0 +1,36 @@
+[package]
+name = "bytecheck"
+version = "0.1.0"
+edition = "2021"
+description = "Verify on-chain EVM runtime bytecode matches a compiled artifact, accounting for proxies, immutables, libraries, and metadata."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/thegraph/bytecheck"
+readme = "README.md"
+keywords = ["ethereum", "evm", "bytecode", "verification", "solidity"]
+categories = ["command-line-utilities", "cryptography::cryptocurrencies"]
+
+[[bin]]
+name = "bytecheck"
+path = "src/main.rs"
+
+[lib]
+name = "bytecheck"
+path = "src/lib.rs"
+
+[dependencies]
+alloy = { version = "2.1", features = ["provider-http", "rpc-types-eth"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+comfy-table = "7"
+owo-colors = "4"
+
+[dev-dependencies]
+insta = { version = "1", features = ["json"] }
+assert_cmd = "2"
+
+[profile.release]
+lto = true
+strip = true
