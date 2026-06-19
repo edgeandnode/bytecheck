@@ -9,7 +9,7 @@ use serde_json::{json, Value};
 pub fn render(report: &Report) -> Result<String, Error> {
     let o = &report.outcome;
     let compiler = report
-        .config
+        .outcome
         .metadata_local
         .solc
         .clone()

@@ -222,11 +222,11 @@ struct Config {     // what we ran against + what we resolved/extracted
     rpc: String,                 // host only — credentials/path stripped
     block: String, mode: Mode,
     immutables: ImmutableSource, // inline | build-info-via-dbg | override | heuristic | unresolved
-    metadata_local: Metadata, metadata_chain: Metadata,
 }
-struct OutcomeReport {  // the verdict + stats (flattens Comparison)
+struct OutcomeReport {  // the verdict + observed findings (flattens Comparison)
     result: Outcome, length_match: bool, local_len: usize, chain_len: usize,
-    metadata_match: bool, metadata_diff: Vec<String>,   // which fields diverged
+    metadata_local: Metadata, metadata_chain: Metadata,  // decoded provenance (compiler, source hash)
+    metadata_match: bool, metadata_diff: Vec<String>,    // which fields diverged
     accounted_diffs: Vec<LabeledRegion>, unexplained_diffs: Vec<DiffRange>,
     suspicious: bool, note: Option<String>, exit_code: i32,
 }

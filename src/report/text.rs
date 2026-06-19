@@ -1,4 +1,4 @@
-//! Human-readable sectioned report: inputs → derived → outcome.
+//! Human-readable sectioned report: config → outcome.
 
 use super::{Config, OutcomeReport, Report};
 use crate::chain::proxy::ProxyKind;
@@ -21,22 +21,23 @@ pub fn render(r: &Report) -> Result<(), Error> {
     row("rpc", &c.rpc);
     row("mode", &format!("{:?}", c.mode).to_lowercase());
     row("immutables", c.immutables.label());
+
+    let o = &r.outcome;
+    section("Outcome");
+    row("result", &result_line(o));
+    row("bytecode", &bytecode_line(o));
     row(
         "compiler",
-        &compiler_line(&c.metadata_local, &c.metadata_chain),
+        &compiler_line(&o.metadata_local, &o.metadata_chain),
     );
     row(
         "source hash",
-        &hash_line(&c.metadata_local, &c.metadata_chain),
+        &hash_line(&o.metadata_local, &o.metadata_chain),
     );
-
-    section("Outcome");
-    row("result", &result_line(&r.outcome));
-    row("bytecode", &bytecode_line(&r.outcome));
-    row("metadata", &metadata_line(&r.outcome));
-    row("accounted", &accounted_line(&r.outcome));
-    row("unexplained", &unexplained_line(&r.outcome));
-    row("exit", &r.outcome.exit_code.to_string());
+    row("metadata", &metadata_line(o));
+    row("accounted", &accounted_line(o));
+    row("unexplained", &unexplained_line(o));
+    row("exit", &o.exit_code.to_string());
 
     // Detail lines.
     for lr in &r.outcome.accounted_diffs {

@@ -44,10 +44,6 @@ pub struct Config {
     pub block: String,
     pub mode: Mode,
     pub immutables: ImmutableSource,
-    /// Compiler provenance decoded from the local artifact's metadata.
-    pub metadata_local: Metadata,
-    /// Compiler provenance decoded from the on-chain code's metadata.
-    pub metadata_chain: Metadata,
 }
 
 /// The verdict and supporting statistics.
@@ -57,6 +53,10 @@ pub struct OutcomeReport {
     pub length_match: bool,
     pub local_len: usize,
     pub chain_len: usize,
+    /// Compiler provenance decoded from the local artifact's metadata.
+    pub metadata_local: Metadata,
+    /// Compiler provenance decoded from the on-chain code's metadata.
+    pub metadata_chain: Metadata,
     pub metadata_match: bool,
     /// Which metadata fields diverged (empty when matching).
     pub metadata_diff: Vec<String>,

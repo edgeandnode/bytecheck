@@ -58,8 +58,6 @@ pub async fn run(args: VerifyArgs) -> Result<i32, Error> {
             impl_address,
             proxy_kind,
             imm_source,
-            Metadata::default(),
-            Metadata::default(),
         );
         let report = Report {
             config,
@@ -112,12 +110,10 @@ pub async fn run(args: VerifyArgs) -> Result<i32, Error> {
         impl_address,
         proxy_kind,
         imm_source,
-        metadata_local.clone(),
-        metadata_chain.clone(),
     );
     let report = Report {
         config,
-        outcome: build_outcome(comparison, &metadata_local, &metadata_chain, note, exit),
+        outcome: build_outcome(comparison, metadata_local, metadata_chain, note, exit),
     };
 
     report::render(&report, args.format)?;
@@ -125,7 +121,6 @@ pub async fn run(args: VerifyArgs) -> Result<i32, Error> {
 }
 
 /// Assemble the config section from the run's inputs and resolved facts.
-#[allow(clippy::too_many_arguments)]
 fn build_config(
     args: &VerifyArgs,
     artifact: &Artifact,
@@ -133,8 +128,6 @@ fn build_config(
     impl_address: Address,
     proxy_kind: ProxyKind,
     immutables: ImmutableSource,
-    metadata_local: Metadata,
-    metadata_chain: Metadata,
 ) -> Config {
     Config {
         contract: artifact.contract.clone(),
@@ -147,8 +140,6 @@ fn build_config(
         block: args.block.clone(),
         mode: args.mode,
         immutables,
-        metadata_local,
-        metadata_chain,
     }
 }
 
@@ -164,21 +155,23 @@ fn artifact_label(args: &VerifyArgs) -> String {
 /// Assemble the outcome section, computing the human metadata field diff.
 fn build_outcome(
     c: Comparison,
-    metadata_local: &Metadata,
-    metadata_chain: &Metadata,
+    metadata_local: Metadata,
+    metadata_chain: Metadata,
     note: Option<String>,
     exit_code: i32,
 ) -> OutcomeReport {
     let metadata_diff = if c.metadata_match {
         Vec::new()
     } else {
-        metadata_local.diff_fields(metadata_chain)
+        metadata_local.diff_fields(&metadata_chain)
     };
     OutcomeReport {
         result: c.outcome,
         length_match: c.length_match,
         local_len: c.local_len,
         chain_len: c.chain_len,
+        metadata_local,
+        metadata_chain,
         metadata_match: c.metadata_match,
         metadata_diff,
         accounted_diffs: c.accounted_diffs,
@@ -196,6 +189,8 @@ fn error_outcome(local_len: usize, note: String) -> OutcomeReport {
         length_match: false,
         local_len,
         chain_len: 0,
+        metadata_local: Metadata::default(),
+        metadata_chain: Metadata::default(),
         metadata_match: false,
         metadata_diff: Vec::new(),
         accounted_diffs: Vec::new(),
