@@ -7,24 +7,6 @@ correctly accounting for **proxies**, **immutables**, **linked libraries**, and
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full design.
 
-## Status
-
-Pre-release. Implemented:
-
-- Artifact loading — Foundry (inline `immutableReferences`) and Hardhat (exact
-  immutables via the `.dbg.json` → build-info chain, with an explicit
-  `--build-info` override).
-- Proxy resolution — EIP-1967, UUPS (EIP-1967 slot), legacy EIP-1822, OZ beacon,
-  and custom storage slots.
-- Immutable & library masking, with a safety check that refuses to mask any
-  region that isn't blank in the local artifact.
-- solc CBOR metadata decoding (compiler version + source hash), reported on every
-  outcome.
-- `text` / `json` / `sarif` reporting and a CI exit-code contract.
-
-Not yet validated end-to-end against a live chain; integration/golden fixtures
-are still to come.
-
 ## Build
 
 ```sh
